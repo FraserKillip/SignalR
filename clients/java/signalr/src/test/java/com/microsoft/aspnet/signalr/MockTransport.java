@@ -7,9 +7,20 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 class MockTransport implements Transport {
+    private static final String RECORD_SEPARATOR = "\u001e";
+
     private OnReceiveCallBack onReceiveCallBack;
     private ArrayList<String> sentMessages = new ArrayList<>();
     private String url;
+    private boolean ignorePings;
+
+    public MockTransport() {
+        this(false);
+    }
+
+    public MockTransport(boolean ignorePings) {
+        this.ignorePings = ignorePings;
+    }
 
     @Override
     public CompletableFuture start(String url) {
@@ -19,7 +30,9 @@ class MockTransport implements Transport {
 
     @Override
     public CompletableFuture send(String message) {
-        sentMessages.add(message);
+        if (!(ignorePings && message.equals("{\"type\":6}" + RECORD_SEPARATOR))) {
+            sentMessages.add(message);
+        }
         return CompletableFuture.completedFuture(null);
     }
 
