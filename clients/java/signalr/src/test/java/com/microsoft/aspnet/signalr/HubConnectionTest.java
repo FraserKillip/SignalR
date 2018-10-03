@@ -5,6 +5,7 @@ package com.microsoft.aspnet.signalr;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -1028,7 +1029,7 @@ class HubConnectionTest {
     public void connectionTimesOutIfServerDoesNotSendMessage() throws InterruptedException, ExecutionException, TimeoutException, Exception {
         MockTransport mockTransport = new MockTransport();
         HubConnection hubConnection = new HubConnection("http://example.com", mockTransport, new NullLogger(), true, new TestHttpClient());
-        hubConnection.setServerTimeoutInMilliseconds(1);
+        hubConnection.setServerTimeout(Duration.ofMillis(1));
         hubConnection.setTickRate(1);
         CompletableFuture<Exception> closedFuture = new CompletableFuture<>();
         hubConnection.onClosed((e) -> {
@@ -1044,7 +1045,7 @@ class HubConnectionTest {
     public void connectionSendsPingsRegularly() throws InterruptedException, ExecutionException, TimeoutException, Exception {
         MockTransport mockTransport = new MockTransport();
         HubConnection hubConnection = new HubConnection("http://example.com", mockTransport, new NullLogger(), true, new TestHttpClient());
-        hubConnection.setKeepAliveIntervalInMilliseconds(1);
+        hubConnection.setKeepAliveInterval(Duration.ofMillis(1));
         hubConnection.setTickRate(1);
 
         hubConnection.start().get(1000, TimeUnit.MILLISECONDS);

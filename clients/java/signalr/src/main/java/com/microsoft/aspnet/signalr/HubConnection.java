@@ -4,6 +4,7 @@
 package com.microsoft.aspnet.signalr;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,26 +40,26 @@ public class HubConnection {
     private Timer pingTimer = null;
     private long nextServerTimeout = 0;
     private long nextPingActivation = 0;
-    private long keepAliveInterval = 15000;
-    private long serverTimeout = 30000;
+    private Duration keepAliveInterval = Duration.ofSeconds(15);
+    private Duration serverTimeout = Duration.ofSeconds(30);
     private long tickRate = 1000;
 
     private static ArrayList<Class<?>> emptyArray = new ArrayList<>();
     private static int MAX_NEGOTIATE_ATTEMPTS = 100;
 
-    public void setServerTimeoutInMilliseconds(long serverTimeout) {
+    public void setServerTimeout(Duration serverTimeout) {
         this.serverTimeout = serverTimeout;
     }
 
-    public long getServerTimeoutInMilliseconds() {
+    public Duration getServerTimeout() {
         return this.serverTimeout;
     }
 
-    public void setKeepAliveIntervalInMilliseconds(long keepAliveInterval) {
+    public void setKeepAliveInterval(Duration keepAliveInterval) {
         this.keepAliveInterval = keepAliveInterval;
     }
 
-    public long getKeepAliveIntervalInMilliseconds() {
+    public Duration getKeepAliveInterval() {
         return this.keepAliveInterval;
     }
 
@@ -438,11 +439,11 @@ public class HubConnection {
     }
 
     private void resetServerTimeout() {
-        this.nextServerTimeout = System.currentTimeMillis() + serverTimeout;
+        this.nextServerTimeout = System.currentTimeMillis() + serverTimeout.toMillis();
     }
 
     private void resetKeepAlive() {
-        this.nextPingActivation = System.currentTimeMillis() + keepAliveInterval;
+        this.nextPingActivation = System.currentTimeMillis() + keepAliveInterval.toMillis();
     }
 
     /**
